@@ -15,6 +15,7 @@ defmodule KouhaiWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
+    authenticate(conn, id)
     user = Repo.get!(User, id)
     render(conn, "show.json", user: user)
   end
@@ -40,6 +41,14 @@ defmodule KouhaiWeb.UserController do
         send_resp(conn, :ok, token)
       {:error, message} ->
         send_resp(conn, :forbidden, message)
+    end
+  end
+
+  defp authenticate(conn, id) do
+    if to_string(conn.assigns[:user]) != id do
+      conn
+      |> send_resp(:unauthorized, "Unauthorized")
+      |> halt()
     end
   end
 end

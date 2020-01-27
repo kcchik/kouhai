@@ -4,13 +4,11 @@ defmodule KouhaiWeb.Plugs.Authentication do
   def init(default), do: default
 
   def call(conn, _) do
-    case Phoenix.Token.verify(conn, "salt", conn.params["api_key"], max_age: 86400) do
-      {:ok, _} ->
-        conn
+    case Phoenix.Token.verify(conn, "salt", conn.params["token"], max_age: 86400) do
+      {:ok, id} ->
+        assign(conn, :user, id)
       {:error, _} ->
         conn
-        |> send_resp(401, "Unauthorized")
-        |> halt
     end
   end
 end
