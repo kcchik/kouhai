@@ -3,8 +3,7 @@ defmodule KouhaiWeb.UserController do
 
   alias Kouhai.{Repo, User}
 
-  # TOKEN AUTH
-  def index(conn, _params) do
+  def index(conn, _) do
     users = Repo.all(User)
     render(conn, "index.json", users: users)
   end
@@ -33,10 +32,10 @@ defmodule KouhaiWeb.UserController do
     send_resp(conn, :no_content, "")
   end
 
-  def login(conn, %{"user_id" => id, "password" => password}) do
+  def login(conn, %{"id" => id, "password" => password}) do
     user = Repo.get!(User, id)
     case Comeonin.Bcrypt.check_pass(user, password) do
-      {:ok, user} ->
+      {:ok, _} ->
         token = Phoenix.Token.sign(conn, "salt", id)
         send_resp(conn, :ok, token)
       {:error, message} ->
