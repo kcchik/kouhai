@@ -8,7 +8,7 @@ defmodule KouhaiWeb.PostController do
     posts = Repo.all(Ecto.assoc(user, :posts))
     render(conn, "index.json", posts: posts)
   end
-  
+
   def create(conn, %{"user_id" => user_id, "post" => post_params}) do
     user = Repo.get!(User, user_id)
     changeset = Post.changeset(%Post{user: user}, post_params)
@@ -29,7 +29,7 @@ defmodule KouhaiWeb.PostController do
     Repo.update!(changeset)
     send_resp(conn, :no_content, "")
   end
-      
+
   def delete(conn, %{"user_id" => user_id, "id" => id}) do
     user = Repo.get!(User, user_id)
     post = Repo.get!(Ecto.assoc(user, :posts), id)

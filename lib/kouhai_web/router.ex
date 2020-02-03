@@ -11,7 +11,7 @@ defmodule KouhaiWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug KouhaiWeb.Plugs.Authentication
+    plug KouhaiWeb.Plugs.Authenticate
   end
 
   scope "/", KouhaiWeb do
@@ -22,7 +22,7 @@ defmodule KouhaiWeb.Router do
 
   scope "/api", KouhaiWeb do
     pipe_through :api
-    
+
     resources "/users", UserController do
       post "/sign_in", UserController, :sign_in
       resources "/posts", PostController

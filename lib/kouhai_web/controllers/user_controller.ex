@@ -7,7 +7,7 @@ defmodule KouhaiWeb.UserController do
     users = Repo.all(User)
     render(conn, "index.json", users: users)
   end
-  
+
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
     user = Repo.insert!(changeset)
@@ -26,7 +26,7 @@ defmodule KouhaiWeb.UserController do
     Repo.update!(changeset)
     send_resp(conn, :no_content, "")
   end
-      
+
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     Repo.delete!(user)
