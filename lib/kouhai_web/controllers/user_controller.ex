@@ -2,7 +2,6 @@ defmodule KouhaiWeb.UserController do
   use KouhaiWeb, :controller
 
   alias Kouhai.{Repo, User}
-  alias KouhaiWeb.Services.Auth
 
   def index(conn, _) do
     users = Repo.all(User)
@@ -16,7 +15,6 @@ defmodule KouhaiWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    Auth.authorize(conn, id)
     user = Repo.get!(User, id)
     render(conn, "show.json", user: user)
   end
@@ -34,11 +32,11 @@ defmodule KouhaiWeb.UserController do
     send_resp(conn, :no_content, "")
   end
 
-  def sign_in(conn, %{"user_id" => id, "password" => password}) do
-    user = Repo.get!(User, id)
+  def sign_in(conn, %{"email" => email, "password" => password}) do
+    user = Repo.get_by!(User, email: email)
     case Comeonin.Bcrypt.check_pass(user, password) do
       {:ok, _} ->
-        token = Phoenix.Token.sign(conn, "salt", id)
+        token = Phoenix.Token.sign(conn, "salt", user.id)
         send_resp(conn, :ok, token)
       {:error, message} ->
         send_resp(conn, :forbidden, message)

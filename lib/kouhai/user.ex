@@ -4,6 +4,7 @@ defmodule Kouhai.User do
 
   schema "users" do
     field :name, :string
+    field :email, :string
     field :password_hash, :string
     field :password, :string, virtual: true
     has_many :posts, Kouhai.Post

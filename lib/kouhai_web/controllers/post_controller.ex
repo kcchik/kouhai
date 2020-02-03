@@ -2,6 +2,7 @@ defmodule KouhaiWeb.PostController do
   use KouhaiWeb, :controller
 
   alias Kouhai.{Repo, Post, User}
+  alias KouhaiWeb.Services.Auth
 
   def index(conn, %{"user_id" => user_id}) do
     user = Repo.get!(User, user_id)

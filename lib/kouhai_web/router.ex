@@ -23,8 +23,8 @@ defmodule KouhaiWeb.Router do
   scope "/api", KouhaiWeb do
     pipe_through :api
 
+    post "/sign_in", UserController, :sign_in
     resources "/users", UserController do
-      post "/sign_in", UserController, :sign_in
       resources "/posts", PostController
     end
   end
