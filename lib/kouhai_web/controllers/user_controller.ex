@@ -33,7 +33,7 @@ defmodule KouhaiWeb.UserController do
     send_resp(conn, :no_content, "")
   end
 
-  def login(conn, %{"id" => id, "password" => password}) do
+  def sign_in(conn, %{"user_id" => id, "password" => password}) do
     user = Repo.get!(User, id)
     case Comeonin.Bcrypt.check_pass(user, password) do
       {:ok, _} ->
@@ -47,7 +47,7 @@ defmodule KouhaiWeb.UserController do
   defp authenticate(conn, id) do
     if to_string(conn.assigns[:user]) != id do
       conn
-      |> send_resp(:unauthorized, "Unauthorized")
+      |> send_resp(:unauthorized, "unauthorized")
       |> halt()
     end
   end

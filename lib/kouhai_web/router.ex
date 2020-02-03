@@ -24,7 +24,7 @@ defmodule KouhaiWeb.Router do
     pipe_through :api
     
     resources "/users", UserController do
-      post "/login", UserController, :login
+      post "/sign_in", UserController, :sign_in
       resources "/posts", PostController
     end
   end
