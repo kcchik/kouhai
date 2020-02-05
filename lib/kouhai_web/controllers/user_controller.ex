@@ -2,6 +2,7 @@ defmodule KouhaiWeb.UserController do
   use KouhaiWeb, :controller
 
   alias Kouhai.{Repo, User}
+  alias KouhaiWeb.Services.Auth
 
   def index(conn, _) do
     users = Repo.all(User)
@@ -36,7 +37,7 @@ defmodule KouhaiWeb.UserController do
     user = Repo.get_by!(User, email: email)
     case Comeonin.Bcrypt.check_pass(user, password) do
       {:ok, _} ->
-        token = Phoenix.Token.sign(conn, "salt", user.id)
+        token = Auth.sign(conn, user.id)
         send_resp(conn, :ok, token)
       {:error, message} ->
         send_resp(conn, :forbidden, message)

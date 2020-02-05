@@ -3,11 +3,13 @@ defmodule Kouhai.User do
   import Ecto.Changeset
 
   schema "users" do
+    has_many :posts, Kouhai.Post
+    has_many :follows, Kouhai.Follow
+
     field :name, :string
     field :email, :string
     field :password_hash, :string
     field :password, :string, virtual: true
-    has_many :posts, Kouhai.Post
 
     timestamps()
   end
@@ -15,8 +17,8 @@ defmodule Kouhai.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :password])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :email, :password])
+    |> validate_required([:name, :email, :password])
     |> encrypt()
   end
 

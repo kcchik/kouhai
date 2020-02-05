@@ -24,8 +24,14 @@ defmodule KouhaiWeb.Router do
     pipe_through :api
 
     post "/sign_in", UserController, :sign_in
-    resources "/users", UserController do
-      resources "/posts", PostController
+    resources "/users", UserController, only: [:index, :create, :show, :update, :delete] do
+
+      resources "/follow", FollowController, only: [:update, :delete]
+      get "/following", FollowController, :following
+      get "/followers", FollowController, :followers
+
+      resources "/posts", PostController, only: [:index, :create, :show, :update, :delete]
+      get "/feed", PostController, :feed
     end
   end
 end
