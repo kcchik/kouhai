@@ -13,7 +13,8 @@ defmodule KouhaiWeb.PostController do
     render(conn, "index.json", posts: posts)
   end
 
-  def create(conn, %{"user_id" => user_id, "post" => post_params}) do
+  def create(conn, %{"post" => post_params}) do
+    user_id = conn.assigns[:user]
     user = Repo.get!(User, user_id)
     changeset = Post.changeset(%Post{user: user}, post_params)
     post = Repo.insert!(changeset)
@@ -21,13 +22,14 @@ defmodule KouhaiWeb.PostController do
     render(conn, "show.json", post: post)
   end
 
-  def show(conn, %{"user_id" => user_id, "id" => id}) do
-    post = get(user_id, id)
+  def show(conn, %{"id" => id}) do
+    post = Repo.get!(Post, id)
 
     render(conn, "show.json", post: post)
   end
 
-  def update(conn, %{"user_id" => user_id, "id" => id, "post" => post_params}) do
+  def update(conn, %{"id" => id, "post" => post_params}) do
+    user_id = conn.assigns[:user]
     post = get(user_id, id)
     changeset = Post.changeset(post, post_params)
     Repo.update!(changeset)
@@ -35,14 +37,16 @@ defmodule KouhaiWeb.PostController do
     send_resp(conn, :no_content, "")
   end
 
-  def delete(conn, %{"user_id" => user_id, "id" => id}) do
+  def delete(conn, %{"id" => id}) do
+    user_id = conn.assigns[:user]
     post = get(user_id, id)
     Repo.delete!(post)
 
     send_resp(conn, :no_content, "")
   end
 
-  def feed(conn, %{"user_id" => user_id}) do
+  def feed(conn, _) do
+    user_id = conn.assigns[:user]
     query = from f in Follow,
       where: f.follower_id == ^user_id,
       join: p in Post,

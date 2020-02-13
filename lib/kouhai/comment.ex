@@ -1,11 +1,10 @@
-defmodule Kouhai.Post do
+defmodule Kouhai.Comment do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "posts" do
+  schema "comments" do
+    belongs_to :post, Kouhai.Post
     belongs_to :user, Kouhai.User
-    has_many :comments, Kouhai.Comment
-    has_many :post_votes, Kouhai.PostVote
 
     field :content, :string
 
@@ -13,8 +12,8 @@ defmodule Kouhai.Post do
   end
 
   @doc false
-  def changeset(post, attrs) do
-    post
+  def changeset(comment, attrs) do
+    comment
     |> cast(attrs, [:content])
     |> validate_required([:content])
   end

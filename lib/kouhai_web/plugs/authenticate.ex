@@ -10,7 +10,10 @@ defmodule KouhaiWeb.Plugs.Authenticate do
          {:ok, id} <- Auth.verify(conn, token) do
       assign(conn, :user, id)
     else
-      _ -> conn
+      _ ->
+        conn
+        |> send_resp(:unauthorized, "unauthorized")
+        |> halt()
     end
   end
 end

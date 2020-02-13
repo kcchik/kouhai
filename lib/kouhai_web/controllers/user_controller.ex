@@ -11,8 +11,12 @@ defmodule KouhaiWeb.UserController do
 
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
-    user = Repo.insert!(changeset)
-    render(conn, "show.json", user: user)
+    case Repo.insert(changeset) do
+      {:ok, user} ->
+        render(conn, "show.json", user: user)
+      {:error, changeset} ->
+        render(conn, KouhaiWeb.ErrorView, "changeset.json", changeset: changeset)
+    end
   end
 
   def show(conn, %{"id" => id}) do
@@ -35,6 +39,20 @@ defmodule KouhaiWeb.UserController do
 
   def sign_in(conn, %{"email" => email, "password" => password}) do
     user = Repo.get_by!(User, email: email)
+    generate_token(conn, user, password)
+  end
+
+  def sign_up(conn, %{"password" => password} = user_params) do
+    changeset = User.changeset(%User{}, user_params)
+    case Repo.insert(changeset) do
+      {:ok, user} ->
+        generate_token(conn, user, password)
+      {:error, changeset} ->
+        render(conn, KouhaiWeb.ErrorView, "changeset.json", changeset: changeset)
+    end
+  end
+
+  defp generate_token(conn, user, password) do
     case Comeonin.Bcrypt.check_pass(user, password) do
       {:ok, _} ->
         token = Auth.sign(conn, user.id)

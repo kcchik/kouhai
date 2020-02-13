@@ -1,13 +1,14 @@
 defmodule KouhaiWeb.Services.Auth do
   import Plug.Conn
 
-  @salt System.get_env("KOUHAI_SALT")
+  # @salt System.get_env("KOUHAI_SALT")
+  @salt "salt"
 
   def authorize(conn, id) do
     if to_string(conn.assigns[:user]) != id do
       conn
-      |> send_resp(:unauthorized, "unauthorized")
-      |> halt()
+      |> send_resp(:forbidden, "forbidden")
+      |> halt
     end
   end
 

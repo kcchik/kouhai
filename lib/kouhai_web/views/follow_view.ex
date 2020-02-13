@@ -2,15 +2,15 @@ defmodule KouhaiWeb.FollowView do
   use KouhaiWeb, :view
 
   def render("followed_index.json", %{follows: follows}) do
-    %{data: render_many(follows, KouhaiWeb.FollowView, "followed.json")}
+    %{following: render_many(follows, KouhaiWeb.FollowView, "followed.json")}
   end
 
   def render("followed.json", %{follow: follow}) do
-    %{id: follow.followed_id}
+    %{user: follow.followed_id}
   end
 
   def render("follower_index.json", %{follows: follows}) do
-    %{data: render_many(follows, KouhaiWeb.FollowView, "follower.json")}
+    %{followers: render_many(follows, KouhaiWeb.FollowView, "follower.json")}
   end
 
   def render("follower.json", %{follow: follow}) do

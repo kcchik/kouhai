@@ -3,13 +3,13 @@ defmodule Kouhai.User do
   import Ecto.Changeset
 
   schema "users" do
-    has_many :posts, Kouhai.Post
     has_many :follows, Kouhai.Follow
+    has_many :posts, Kouhai.Post
 
-    field :name, :string
     field :email, :string
-    field :password_hash, :string
+    field :name, :string
     field :password, :string, virtual: true
+    field :password_hash, :string
 
     timestamps()
   end
@@ -17,12 +17,25 @@ defmodule Kouhai.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :email, :password])
-    |> validate_required([:name, :email, :password])
-    |> encrypt()
+    |> cast(attrs, [:email, :name, :password])
+    |> validate_required([:email, :name, :password])
+    # |> validate_confirmation(:password)
+    |> validate_length(:password, min: 6)
+    |> unique_constraint(:email)
+    |> downcase
+    |> encrypt
   end
 
-  defp encrypt(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
-    change(changeset, Comeonin.Bcrypt.add_hash(password))
+  defp downcase(changeset) do
+    update_change(changeset, :email, &String.downcase/1)
+  end
+
+  defp encrypt(changeset) do
+    case get_change(changeset, :password) do
+      nil ->
+        changeset
+      password ->
+        change(changeset, Comeonin.Bcrypt.add_hash(password))
+    end
   end
 end
