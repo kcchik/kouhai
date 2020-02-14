@@ -22,6 +22,7 @@ defmodule KouhaiWeb.Router do
     end
     resources "/posts", PostController, only: [:show] do
       resources "/comments", CommentController, only: [:index]
+      resources "/votes", PostVoteController, only: [:index]
     end
   end
 
@@ -35,6 +36,8 @@ defmodule KouhaiWeb.Router do
     get "/feed", PostController, :feed
     resources "/posts", PostController, only: [:create, :update, :delete] do
       resources "/comments", CommentController, only: [:create, :update, :delete]
+      post "/upvote", PostVoteController, :upvote
+      post "/downvote", PostVoteController, :downvote
     end
   end
 end
