@@ -18,11 +18,15 @@ defmodule KouhaiWeb.Router do
     resources "/users", UserController, only: [:index, :show] do
       get "/following", FollowController, :following
       get "/followers", FollowController, :followers
+      get "/picture", UserPictureController, :show
       resources "/posts", PostController, only: [:index]
     end
     resources "/posts", PostController, only: [:show] do
       resources "/comments", CommentController, only: [:index]
       resources "/votes", PostVoteController, only: [:index]
+    end
+    resources "/comments", CommentController, only: [] do
+      resources "/votes", CommentVoteController, only: [:index]
     end
   end
 
@@ -33,11 +37,17 @@ defmodule KouhaiWeb.Router do
 
     resources "/users", UserController, only: [:update, :delete]
     resources "/follows", FollowController, only: [:update, :delete]
+    post "/picture", UserPictureController, :update
+    delete "/picture", UserPictureController, :delete
     get "/feed", PostController, :feed
     resources "/posts", PostController, only: [:create, :update, :delete] do
-      resources "/comments", CommentController, only: [:create, :update, :delete]
+      resources "/comments", CommentController, only: [:create]
       post "/upvote", PostVoteController, :upvote
       post "/downvote", PostVoteController, :downvote
+    end
+    resources "/comments", CommentController, only: [:update, :delete] do
+      post "/upvote", CommentVoteController, :upvote
+      post "/downvote", CommentVoteController, :downvote
     end
   end
 end

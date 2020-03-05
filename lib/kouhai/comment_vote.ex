@@ -4,10 +4,9 @@ defmodule Kouhai.CommentVote do
 
   schema "comment_votes" do
     belongs_to :comment, Kouhai.Comment
-    belongs_to :post, Kouhai.Post
     belongs_to :user, Kouhai.User
 
-    field :upvote, :boolean, default: false
+    field :upvote, :boolean
 
     timestamps()
   end

@@ -25,7 +25,7 @@ defmodule KouhaiWeb.PostVoteController do
     vote(conn, post_id, false)
   end
 
-  defp vote(conn, post_id, upvote) do
+  defp vote(conn, post_id, isUpvote) do
     user_id = conn.assigns[:user]
     query = from p in PostVote,
       where: p.user_id == ^user_id and p.post_id == ^post_id
@@ -33,13 +33,14 @@ defmodule KouhaiWeb.PostVoteController do
       nil ->
         user = Repo.get!(User, user_id)
         post = Repo.get!(Post, post_id)
-        changeset = PostVote.changeset(%PostVote{user: user, post: post}, %{upvote: upvote})
+        changeset = PostVote.changeset(%PostVote{user: user, post: post}, %{upvote: isUpvote})
         Repo.insert!(changeset)
       vote ->
-        if vote.upvote == upvote do
+        # Delete vote if upvoted/downvoted twice
+        if vote.upvote == isUpvote do
           Repo.delete!(vote)
         else
-          changeset = PostVote.changeset(vote, %{upvote: !vote.upvote})
+          changeset = PostVote.changeset(vote, %{upvote: isUpvote})
           Repo.update!(changeset)
         end
     end

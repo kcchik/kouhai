@@ -3,7 +3,6 @@ defmodule Kouhai.User do
   import Ecto.Changeset
 
   schema "users" do
-    has_many :follows, Kouhai.Follow
     has_many :posts, Kouhai.Post
 
     field :email, :string
