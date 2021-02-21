@@ -23,10 +23,12 @@ defmodule KouhaiWeb.Router do
     end
     resources "/posts", PostController, only: [:show] do
       resources "/comments", CommentController, only: [:index]
-      resources "/votes", PostVoteController, only: [:index]
+      get "/upvotes", PostVoteController, :upvote_count
+      get "/downvotes", PostVoteController, :downvote_count
     end
     resources "/comments", CommentController, only: [] do
-      resources "/votes", CommentVoteController, only: [:index]
+      get "/upvotes", CommentVoteController, :upvote_count
+      get "/downvotes", CommentVoteController, :downvote_count
     end
   end
 

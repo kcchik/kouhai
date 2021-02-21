@@ -5,16 +5,18 @@ defmodule KouhaiWeb.CommentVoteController do
 
   alias Kouhai.{Repo, CommentVote, Comment, User}
 
-  def index(conn, %{"comment_id" => comment_id}) do
+  def upvote_count(conn, %{"comment_id" => comment_id}) do
     query = from c in CommentVote,
-      where: c.comment_id == ^comment_id and c.upvote == true
+      where: c.comment_id == ^comment_id and c.is_upvote == true
     upvotes = Repo.aggregate(query, :count)
+    send_resp(conn, :ok, to_string(upvotes))
+  end
 
+  def downvote_count(conn, %{"comment_id" => comment_id}) do
     query = from c in CommentVote,
-      where: c.comment_id == ^comment_id and c.upvote == false
+      where: c.comment_id == ^comment_id and c.is_upvote == false
     downvotes = Repo.aggregate(query, :count)
-
-    send_resp(conn, :ok, to_string(upvotes - downvotes))
+    send_resp(conn, :ok, to_string(downvotes))
   end
 
   def upvote(conn, %{"comment_id" => comment_id}) do

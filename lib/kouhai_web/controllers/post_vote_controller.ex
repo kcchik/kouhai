@@ -5,16 +5,18 @@ defmodule KouhaiWeb.PostVoteController do
 
   alias Kouhai.{Repo, PostVote, Post, User}
 
-  def index(conn, %{"post_id" => post_id}) do
+  def upvote_count(conn, %{"post_id" => post_id}) do
     query = from p in PostVote,
-      where: p.post_id == ^post_id and p.upvote == true
+      where: p.post_id == ^post_id and p.is_upvote == true
     upvotes = Repo.aggregate(query, :count)
+    send_resp(conn, :ok, to_string(upvotes))
+  end
 
+  def downvote_count(conn, %{"post_id" => post_id}) do
     query = from p in PostVote,
-      where: p.post_id == ^post_id and p.upvote == false
+      where: p.post_id == ^post_id and p.is_upvote == false
     downvotes = Repo.aggregate(query, :count)
-
-    send_resp(conn, :ok, to_string(upvotes - downvotes))
+    send_resp(conn, :ok, to_string(downvotes))
   end
 
   def upvote(conn, %{"post_id" => post_id}) do

@@ -6,7 +6,7 @@ defmodule Kouhai.CommentVote do
     belongs_to :comment, Kouhai.Comment
     belongs_to :user, Kouhai.User
 
-    field :upvote, :boolean
+    field :is_upvote, :boolean
 
     timestamps()
   end
@@ -14,7 +14,7 @@ defmodule Kouhai.CommentVote do
   @doc false
   def changeset(comment_vote, attrs) do
     comment_vote
-    |> cast(attrs, [:upvote])
-    |> validate_required([:upvote])
+    |> cast(attrs, [:is_upvote])
+    |> validate_required([:is_upvote])
   end
 end

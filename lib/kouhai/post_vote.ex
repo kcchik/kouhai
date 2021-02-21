@@ -6,7 +6,7 @@ defmodule Kouhai.PostVote do
     belongs_to :post, Kouhai.Post
     belongs_to :user, Kouhai.User
 
-    field :upvote, :boolean
+    field :is_upvote, :boolean
 
     timestamps()
   end
@@ -14,7 +14,7 @@ defmodule Kouhai.PostVote do
   @doc false
   def changeset(post_votes, attrs) do
     post_votes
-    |> cast(attrs, [:upvote])
-    |> validate_required([:upvote])
+    |> cast(attrs, [:is_upvote])
+    |> validate_required([:is_upvote])
   end
 end
